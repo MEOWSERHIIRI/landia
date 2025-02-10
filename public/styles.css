@@ -1,0 +1,32 @@
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #a200ff;
+}
+
+#intro-screen {
+    background-image: url('images/background.png');
+    background-repeat: repeat-y;
+    background-size: 900px auto;
+    background-position: center;
+    color: rgb(0, 255, 217);
+    padding: 20px;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+    box-sizing: border-box;
+    padding-top: 50px;  
+    padding-bottom: 50px; 
+}
