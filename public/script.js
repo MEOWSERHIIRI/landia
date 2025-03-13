@@ -48,3 +48,4 @@ for (let y = 0; y < BOARD_SIZE; y++) {
 function getCell(board, x, y) {
     return board[y][x];
 }
+
