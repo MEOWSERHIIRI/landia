@@ -12,7 +12,7 @@ function startGame(){
     document.getElementById('game-screen').style.display = 'block';
     board = generateRandomBoard();
     console.log(board);
-    generateObstacles(board);
+    
     drawBoard(board);
 }
 
@@ -27,6 +27,12 @@ function generateRandomBoard() {
         }
     }
 
+    generateObstacles(newBoard);
+
+    [playerX, playerY] = randomEmptyPosition(newBoard);
+
+    newBoard[playerX][playerY] = "P";
+
     return newBoard;
 }
 
@@ -35,21 +41,21 @@ function drawBoard(board){
     gameBoard.style.gridTemplateColumns = `repeat(${BOARD_SIZE}, 1fr)`;
 
 
-
-
-for (let y = 0; y < BOARD_SIZE; y++) {
-    for (let x = 0; x < BOARD_SIZE; x++) {
-        const cell = document.createElement('div');
-        cell.classList.add('cell')
-        cell.style.height = cellSize + "px"
-        cell.style.width = cellSize + "px"
-        if (getCell(board, x, y) === 'W') {
-            cell.classList.add('wall'); // 'W' on seinä
-        }
-        gameBoard.appendChild(cell);
+    for (let y = 0; y < BOARD_SIZE; y++) {
+        for (let x = 0; x < BOARD_SIZE; x++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell')
+            cell.style.height = cellSize + "px"
+            cell.style.width = cellSize + "px"
+            if (getCell(board, x, y) === 'W') {
+                cell.classList.add('wall'); // 'W' on seinä
+            }
+            else if (getCell(board, x, y) === 'P') {
+                cell.classList.add('player'); 
+            }
+            gameBoard.appendChild(cell);
+        }    
     }
-    
-}
 }
 
 function getCell(board, x, y) {
@@ -78,7 +84,8 @@ function generateObstacles(board){
         {startX: 8, startY: 2},
         {startX: 4, startY: 8},
         {startX: 10, startY: 10},
-        {startX: 10, startY: 5}
+        {startX: 10, startY: 5},
+        {startX: 5, startY: 10},
     ]
     positions.forEach(pos=>{
         const randomObstacle = obstacles[Math.floor(Math.random() * obstacles.length)];
@@ -90,4 +97,19 @@ function placeObstacle(board,obstacle,startX, startY){
         [x,y] = coordinatePair;
         board[startY + y][startX + x] = 'W';
     }
+}
+
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+
+function randomEmptyPosition(board) {
+  x = randomInt(1, BOARD_SIZE - 2);
+  y = randomInt(1, BOARD_SIZE - 2);
+  if (board[y][x] === ' ') {
+      return [x, y];
+  } else {
+      return randomEmptyPosition(board);
+  }
 }

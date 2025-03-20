@@ -53,3 +53,10 @@ button{
     background-size: cover;
 
 }
+
+.player{
+
+    background-image: url("images/player.png");
+    background-size: cover;
+
+}
