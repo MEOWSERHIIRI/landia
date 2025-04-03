@@ -9,6 +9,8 @@ let player;
 let playerX;
 let playerY;
 
+let ghosts = [];
+
 document.addEventListener('keydown', (event) => {
     switch (event.key) {
       case 'ArrowUp':
@@ -50,6 +52,16 @@ function generateRandomBoard() {
         }
     }
 
+    ghosts = [];
+
+    for(let i=0; i < 8; i++){
+        const [ghostX, ghostY] = randomEmptyPosition(newBoard);
+        setCell(newBoard, ghostX, ghostY, 'K');
+        ghosts.push(new ghost(ghostX,ghostY))
+    }
+
+    console.log(ghosts);
+
     generateObstacles(newBoard);
 
     [playerX, playerY] = randomEmptyPosition(newBoard);
@@ -64,6 +76,8 @@ function generateRandomBoard() {
 function drawBoard(board){
     const gameBoard = document.getElementById("game-board");
     gameBoard.style.gridTemplateColumns = `repeat(${BOARD_SIZE}, 1fr)`;
+
+    gameBoard.innerHTML = ' ';
 
 
     for (let y = 0; y < BOARD_SIZE; y++) {
@@ -86,6 +100,9 @@ function drawBoard(board){
 function getCell(board, x, y) {
     return board[y][x];
 }
+function setCell(board, x, y, value) {
+    board[y][x] = value;
+}
 
 
 function calculateCellSize() {
@@ -102,7 +119,8 @@ function generateObstacles(board){
     const obstacles =[
      [[0,0],[0,1],[1,0],[1,1]],//Neliö
      [[0,0],[0,1],[0,2],[0,3]],//I
-     [[0,0],[1,0],[2,0],[1,1]]//T
+     [[0,0],[1,0],[2,0],[1,1]],//T
+     [[1,2],[0,2],[3,3],[0,1]]
     ];
     const positions =[
         {startX: 2, startY: 2},
@@ -156,7 +174,7 @@ class Player{
        const newX = currentX + dx;
 
 
-
+    if(getCell(board, newX, newY)=== ' '){
      // Päivitä pelaajan sijainti
      this.X = newX;
      this.Y = newY;
@@ -167,8 +185,14 @@ class Player{
 
     drawBoard(board);
     }
+}
 
 
 
-
+}
+class ghost{
+    constructor(x,y){
+        this.X = x;
+        this.Y = y;
+    }
 }
