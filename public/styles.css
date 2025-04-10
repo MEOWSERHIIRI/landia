@@ -60,3 +60,17 @@ button{
     background-size: cover;
 
 }
+
+.kirby{
+
+    background-image: url("images/kirby.png");
+    background-size: cover;
+
+}
+
+.fire{
+
+    background-color: rgb(44, 0, 133);
+    border-radius: 50%;
+
+}

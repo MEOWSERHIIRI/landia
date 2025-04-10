@@ -70,6 +70,8 @@ function generateRandomBoard() {
 
     newBoard[player.Y][player.X] = "P";
 
+    setCell(newBoard,5 ,5, "F")
+
     return newBoard;
 }
 
@@ -92,7 +94,14 @@ function drawBoard(board){
             else if (getCell(board, x, y) === 'P') {
                 cell.classList.add('player'); 
             }
+            else if (getCell(board, x, y) === 'K') {
+                cell.classList.add('kirby');
+            }
+            else if (getCell(board, x, y) === 'F') {
+                cell.classList.add('fire');
+            }
             gameBoard.appendChild(cell);
+            
         }    
     }
 }
