@@ -25,6 +25,21 @@ document.addEventListener('keydown', (event) => {
       case 'ArrowRight':
       player.move(1, 0); // Liikuta oikealle
       break;
+      case 'w':
+        shootAt(player.X, player.Y - 1);
+      break;
+      case 's':
+        shootAt(player.X, player.Y + 1);
+      break;
+      case 'a':
+        shootAt(player.X - 1, player.Y);
+      break;
+      case 'd':
+        shootAt(player.X + 1, player.Y);
+      break;
+      case 'x':
+        shootAt(player.X, player.Y );
+      break;
       }
      event.preventDefault(); // Prevent default scrolling behaviour
      });
@@ -70,8 +85,6 @@ function generateRandomBoard() {
 
     newBoard[player.Y][player.X] = "P";
 
-    setCell(newBoard,5 ,5, "F")
-
     return newBoard;
 }
 
@@ -99,6 +112,10 @@ function drawBoard(board){
             }
             else if (getCell(board, x, y) === 'F') {
                 cell.classList.add('fire');
+                setTimeout(() => {
+                    setCell(board, x, y, ' ')
+                    drawBoard(board);
+                }, 500); // Ammus näkyy 500 ms
             }
             gameBoard.appendChild(cell);
             
@@ -203,5 +220,27 @@ class ghost{
     constructor(x,y){
         this.X = x;
         this.Y = y;
+    }
+}
+
+function shootAt(x, y){
+
+    // Tarkistetaan, että ammus ei mene seinään
+    if (getCell(board, x, y) === 'W') {
+        return;
+    }
+
+    const ghostIndex = ghosts.findIndex(ghost => ghost.X === x && ghost.Y === y);
+
+    if(ghostIndex !== -1){
+        ghosts.splice(ghostIndex,1);
+        console.log(ghosts)
+    }
+
+    setCell(board, x, y, 'F')
+    drawBoard(board);
+
+    if(ghosts.length === 0){
+        alert('Landia voitti!');
     }
 }
