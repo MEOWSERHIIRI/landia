@@ -11,6 +11,8 @@ let playerY;
 
 let ghosts = [];
 
+let ghostInterval;
+
 document.addEventListener('keydown', (event) => {
     switch (event.key) {
       case 'ArrowUp':
@@ -55,6 +57,11 @@ function startGame(){
     document.getElementById('game-screen').style.display = 'block';
     board = generateRandomBoard();
     console.log(board);
+    ghostInterval = setInterval(function() {
+        //ghosts[0].moveGhostTowardsPlayer(pelaaja, board);
+        moveGhosts();
+    }, 1500);
+
     
     drawBoard(board);
 }
@@ -223,8 +230,8 @@ class ghost{
     }
 
     moveGhostTowardsPlayer(player,board, oldGhosts){
-        let dx = player.x - this.X;
-        let dy = player.y - this.Y;
+        let dx = player.X - this.X;
+        let dy = player.Y - this.Y;
 
         console.log(dx, dy);
 
@@ -239,14 +246,14 @@ class ghost{
             if (dx > 0) moves.push({ x: this.X, y: this.Y + 1}); // Move down
             else moves.push({ x: this.X, y: this.Y - 1 }); // Move up
             if (dx > 0) moves.push({ x: this.X + 1, y: this.Y }); // Move right
-            else moves.push({ x: this.X - 1, y: this.y }); //  Move left
+            else moves.push({ x: this.X - 1, y: this.Y }); //  Move left
         }
 
         console.log(moves);
 
         for (let move of moves) {
             if (board[move.y][move.x] === ' ' || board[move.y][move.x] === 'P' &&
-              !oldGhosts.some(h => h.x === move.x && h.y === move.y)) // Tarkista, ettei haamu liiku toisen haamun päälle) 
+              !oldGhosts.some(h => h.x === move.x && h.y === move.y) && board[move.y][move.x] !== 'K') // Tarkista, ettei haamu liiku toisen haamun päälle) 
               { 
                   return move;
               }
@@ -262,19 +269,19 @@ class ghost{
 function moveGhosts() {
 
     // Säilytä haamujen vanhat paikat
-    const oldGhosts = ghosts.map(ghost => ({ x: ghost.x, y: ghost.y }));
+    const oldGhosts = ghosts.map(ghost => ({ x: ghost.X, y: ghost.Y }));
     
       ghosts.forEach(ghost => {
         
         const newPosition = ghost.moveGhostTowardsPlayer(player, board, oldGhosts);
           
-          ghost.x = newPosition.x;
-          ghost.y = newPosition.y;
+          ghost.X = newPosition.x;
+          ghost.Y = newPosition.y;
         
-          setCell(board, ghost.x, ghost.y, 'G');
+          setCell(board, ghost.X, ghost.Y, 'K');
     
           // Check if ghost touches the player
-          if (ghost.x === pelaaja.x && ghost.y === player.y) {
+          if (ghost.X === player.X && ghost.Y === player.Y) {
               endGame() // End the game
           return;
           }
@@ -288,7 +295,7 @@ function moveGhosts() {
     
         // Update the board with new ghost positions
         ghosts.forEach(ghost => {
-            board[ghost.y][ghost.x] = 'G';
+            board[ghost.Y][ghost.X] = 'K';
         });
     
     // Redraw the board to reflect ghost movement
@@ -297,7 +304,7 @@ function moveGhosts() {
 
     function endGame() {
         isGameRunning = false; // Set the game as game over
-        alert('Game Over! The ghost caught you!');
+        alert('Game Over! Play undertale!');
          // Show intro-view ja hide game-view
         ghosts = []; // Tyhjennetään haamut
         clearInterval(ghostInterval);
@@ -331,7 +338,28 @@ function shootAt(x, y){
     setCell(board, x, y, 'F')
     drawBoard(board);
 
+    if(ghosts.length === 7){
+        alert('You killed a kirby!');
+    }
     if(ghosts.length === 0){
-        alert('Landia voitti!');
+        alert('You killed the final kirby!');
+    }
+    if(ghosts.length === 6){
+        alert('You killed a kirby!');
+    }
+    if(ghosts.length === 5){
+        alert('You killed a kirby!');
+    }
+    if(ghosts.length === 4){
+        alert('You killed a kirby!');
+    }
+    if(ghosts.length === 3){
+        alert('You killed a kirby!');
+    }
+    if(ghosts.length === 2){
+        alert('You killed a kirby!');
+    }
+    if(ghosts.length === 1){
+        alert('You killed a kirby!');
     }
 }
