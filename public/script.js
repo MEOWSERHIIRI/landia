@@ -40,6 +40,9 @@ document.addEventListener('keydown', (event) => {
       case 'x':
         shootAt(player.X, player.Y );
       break;
+      case '+':
+        shootAt(player.X + 1, player.Y + 5);
+      break;
       }
      event.preventDefault(); // Prevent default scrolling behaviour
      });
@@ -151,10 +154,7 @@ function generateObstacles(board){
     const positions =[
         {startX: 2, startY: 2},
         {startX: 8, startY: 2},
-        {startX: 4, startY: 8},
-        {startX: 10, startY: 10},
-        {startX: 10, startY: 5},
-        {startX: 5, startY: 10},
+        {startX: 4, startY: 8}
     ]
     positions.forEach(pos=>{
         const randomObstacle = obstacles[Math.floor(Math.random() * obstacles.length)];
@@ -221,7 +221,98 @@ class ghost{
         this.X = x;
         this.Y = y;
     }
+
+    moveGhostTowardsPlayer(player,board, oldGhosts){
+        let dx = player.x - this.X;
+        let dy = player.y - this.Y;
+
+        console.log(dx, dy);
+
+        let moves = [];
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx > 0) moves.push({ x: this.X + 1, y: this.Y }); // Move right
+            else moves.push({ x: this.X - 1, y: this.Y }); // Move left
+            if (dy > 0) moves.push({ x: this.X, y: this.Y + 1 }); // Move down
+            else moves.push({ x: this.X, y: this.Y - 1 }); // Move up
+        } else {
+            if (dx > 0) moves.push({ x: this.X, y: this.Y + 1}); // Move down
+            else moves.push({ x: this.X, y: this.Y - 1 }); // Move up
+            if (dx > 0) moves.push({ x: this.X + 1, y: this.Y }); // Move right
+            else moves.push({ x: this.X - 1, y: this.y }); //  Move left
+        }
+
+        console.log(moves);
+
+        for (let move of moves) {
+            if (board[move.y][move.x] === ' ' || board[move.y][move.x] === 'P' &&
+              !oldGhosts.some(h => h.x === move.x && h.y === move.y)) // Tarkista, ettei haamu liiku toisen haamun päälle) 
+              { 
+                  return move;
+              }
+        }
+        // Jos kaikki pelaajaan päin suunnat ovat esteitä, pysy paikallaan
+        return { x: this.X, y: this.Y };
+        
+
+
+    }
 }
+
+function moveGhosts() {
+
+    // Säilytä haamujen vanhat paikat
+    const oldGhosts = ghosts.map(ghost => ({ x: ghost.x, y: ghost.y }));
+    
+      ghosts.forEach(ghost => {
+        
+        const newPosition = ghost.moveGhostTowardsPlayer(player, board, oldGhosts);
+          
+          ghost.x = newPosition.x;
+          ghost.y = newPosition.y;
+        
+          setCell(board, ghost.x, ghost.y, 'G');
+    
+          // Check if ghost touches the player
+          if (ghost.x === pelaaja.x && ghost.y === player.y) {
+              endGame() // End the game
+          return;
+          }
+    
+          });
+    
+        // Tyhjennä vanhat haamujen paikat laudalta
+        oldGhosts.forEach(ghost => {
+          board[ghost.y][ghost.x] = ' '; // Clear old ghost position
+        });
+    
+        // Update the board with new ghost positions
+        ghosts.forEach(ghost => {
+            board[ghost.y][ghost.x] = 'G';
+        });
+    
+    // Redraw the board to reflect ghost movement
+    drawBoard(board);
+    }
+
+    function endGame() {
+        isGameRunning = false; // Set the game as game over
+        alert('Game Over! The ghost caught you!');
+         // Show intro-view ja hide game-view
+        ghosts = []; // Tyhjennetään haamut
+        clearInterval(ghostInterval);
+        document.getElementById('intro-screen').style.display = 'block';
+        document.getElementById('game-screen').style.display = 'none';
+        ghostInterval = setInterval(function() {
+            //ghosts[0].moveGhostTowardsPlayer(pelaaja, board);
+            moveGhosts();
+        }, 1000);
+    
+        console.log(board);
+        drawBoard(board);
+    }
+
+
 
 function shootAt(x, y){
 
